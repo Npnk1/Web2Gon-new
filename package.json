@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:windows": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/dev-windows.ps1",
+    "dev:windows:diagnose": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/dev-windows.ps1 -VerifySeconds 60",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

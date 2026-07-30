@@ -1,0 +1,56 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 1800 760"
+  preserveAspectRatio="none"
+  fill="none"
+>
+  <defs>
+    <path
+      id="information-flow-line"
+      d="M-160 604C40 538 220 486 430 448C620 412 755 384 850 320C910 280 950 212 1000 190C1042 171 1086 171 1130 198C1185 232 1215 300 1270 340C1350 398 1470 418 1590 432C1725 441 1835 444 1960 446"
+    />
+  </defs>
+
+  <g
+    stroke="#858580"
+    stroke-width="0.8"
+    stroke-linecap="round"
+    opacity="0.22"
+    vector-effect="non-scaling-stroke"
+  >
+    <use href="#information-flow-line"/>
+    <use href="#information-flow-line" transform="translate(0 8.8)"/>
+    <use href="#information-flow-line" transform="translate(0 17.6)"/>
+    <use href="#information-flow-line" transform="translate(0 26.4)"/>
+    <use href="#information-flow-line" transform="translate(0 35.2)"/>
+    <use href="#information-flow-line" transform="translate(0 44)"/>
+    <use href="#information-flow-line" transform="translate(0 52.8)"/>
+    <use href="#information-flow-line" transform="translate(0 61.6)"/>
+    <use href="#information-flow-line" transform="translate(0 70.4)"/>
+    <use href="#information-flow-line" transform="translate(0 79.2)"/>
+    <use href="#information-flow-line" transform="translate(0 88)"/>
+    <use href="#information-flow-line" transform="translate(0 96.8)"/>
+    <use href="#information-flow-line" transform="translate(0 105.6)"/>
+    <use href="#information-flow-line" transform="translate(0 114.4)"/>
+    <use href="#information-flow-line" transform="translate(0 123.2)"/>
+    <use href="#information-flow-line" transform="translate(0 132)"/>
+    <use href="#information-flow-line" transform="translate(0 140.8)"/>
+    <use href="#information-flow-line" transform="translate(0 149.6)"/>
+    <use href="#information-flow-line" transform="translate(0 158.4)"/>
+    <use href="#information-flow-line" transform="translate(0 167.2)"/>
+    <use href="#information-flow-line" transform="translate(0 176)"/>
+    <use href="#information-flow-line" transform="translate(0 184.8)"/>
+    <use href="#information-flow-line" transform="translate(0 193.6)"/>
+    <use href="#information-flow-line" transform="translate(0 202.4)"/>
+    <use href="#information-flow-line" transform="translate(0 211.2)"/>
+    <use href="#information-flow-line" transform="translate(0 220)"/>
+    <use href="#information-flow-line" transform="translate(0 228.8)"/>
+    <use href="#information-flow-line" transform="translate(0 237.6)"/>
+    <use href="#information-flow-line" transform="translate(0 246.4)"/>
+    <use href="#information-flow-line" transform="translate(0 255.2)"/>
+    <use href="#information-flow-line" transform="translate(0 264)"/>
+    <use href="#information-flow-line" transform="translate(0 272.8)"/>
+    <use href="#information-flow-line" transform="translate(0 281.6)"/>
+    <use href="#information-flow-line" transform="translate(0 290.4)"/>
+  </g>
+</svg>

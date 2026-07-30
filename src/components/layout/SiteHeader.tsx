@@ -3,12 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 
 const navigation = [
-  { label: "Services", href: "#information-landscape" },
-  { label: "AI Visibility", href: "#information-landscape" },
-  { label: "Work", href: "#information-landscape" },
-  { label: "Insights", href: "#information-landscape" },
-  { label: "About", href: "#information-landscape" },
-  { label: "Contact", href: "#information-landscape" },
+  { label: "Services", href: "#capabilities" },
+  { label: "AI Visibility", href: "#capabilities" },
+  { label: "Work", href: "#demonstration" },
+  { label: "Insights", href: "#method" },
+  { label: "About", href: "#about" },
+  { label: "Contact", href: "#contact" },
 ] as const;
 
 export function SiteHeader() {
@@ -86,7 +86,7 @@ export function SiteHeader() {
           EN
         </span>
 
-        <a className="header-action" href="#information-landscape">
+        <a className="header-action" href="#contact">
           Book a consultation
         </a>
 
@@ -126,7 +126,7 @@ export function SiteHeader() {
         </nav>
         <div className="mobile-menu__footer">
           <span>[W2G] Source system</span>
-          <a href="#information-landscape" onClick={closeFromLink}>
+          <a href="#contact" onClick={closeFromLink}>
             Book a consultation
           </a>
         </div>

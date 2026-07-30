@@ -2,6 +2,9 @@
 @import "../styles/tokens.css";
 @import "../styles/home.css";
 @import "../styles/first-chapter.css";
+@import "../styles/capabilities.css";
+@import "../styles/completion.css";
+@import "../styles/about.css";
 
 *,
 *::before,

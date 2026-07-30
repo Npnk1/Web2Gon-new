@@ -41,12 +41,16 @@ export function Hero() {
 
         <div className="hero__support">
           <p>
-            We build and optimize websites so AI systems can understand, trust
-            and cite your business.
+            We build and optimize websites so AI systems can{" "}
+            <strong>understand</strong>
+            <span className="hero__punctuation">,</span>{" "}
+            <strong>trust</strong> and <strong>cite</strong> your business.
           </p>
-          <a className="hero__link" href="#information-landscape">
-            AI Visibility Solutions
-          </a>
+          <div className="hero__link-group">
+            <a className="hero__link" href="#information-landscape">
+              AI Visibility Solutions
+            </a>
+          </div>
         </div>
       </div>
     </section>

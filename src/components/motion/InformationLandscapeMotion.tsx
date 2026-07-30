@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { registerGsap } from "@/lib/gsap";
 
 type InformationLandscapeMotionProps = {
@@ -12,7 +12,7 @@ export function InformationLandscapeMotion({
 }: InformationLandscapeMotionProps) {
   const rootRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     let cancelled = false;
     let teardown: (() => void) | undefined;
     let readinessCleanup: (() => void) | undefined;
@@ -128,6 +128,7 @@ export function InformationLandscapeMotion({
           "(prefers-reduced-motion: no-preference)",
           () => {
             const intro = gsap.timeline({
+              paused: true,
               defaults: { ease: "power3.out" },
             });
 
@@ -155,6 +156,10 @@ export function InformationLandscapeMotion({
                 },
                 0.48,
               );
+
+            intro.pause(0);
+            gsap.set(".hero__landscape-media", { visibility: "visible" });
+            intro.play(0);
 
             return () => {
               gsap.set(
@@ -200,10 +205,12 @@ export function InformationLandscapeMotion({
                   ".hero__title",
                   ".hero__support",
                   ".hero__landscape",
-                  ".hero__landscape-media",
                 ],
                 { clearProps: "all" },
               );
+              gsap.set(".hero__landscape-media", {
+                clearProps: "transform",
+              });
             };
           },
         );
@@ -220,15 +227,44 @@ export function InformationLandscapeMotion({
               scrollTrigger: {
                 trigger: ".information-landscape__stage",
                 start: () => `top top+=${headerHeight()}`,
-                end: () => `+=${window.innerHeight * 2}`,
+                end: () => `+=${window.innerHeight * 1.75}`,
                 pin: ".information-landscape__stage",
                 pinSpacing: true,
                 scrub: 0.75,
                 anticipatePin: 1,
                 invalidateOnRefresh: true,
+                refreshPriority: 10,
               },
             });
             transition
+              .from(
+                ".journey-stage h3",
+                {
+                  autoAlpha: 0.2,
+                  duration: 0.055,
+                  stagger: 0.18,
+                },
+                0.04,
+              )
+              .from(
+                ".journey-progress__line",
+                {
+                  scaleX: 0,
+                  transformOrigin: "0 50%",
+                  duration: 1.16,
+                },
+                0.08,
+              )
+              .from(
+                ".journey-progress__label",
+                {
+                  y: 5,
+                  autoAlpha: 0,
+                  duration: 0.06,
+                  stagger: 0.38,
+                },
+                0.09,
+              )
               .from(
                 ".journey-stage--question .journey-stage__body",
                 {
@@ -411,7 +447,7 @@ export function InformationLandscapeMotion({
                 ".information-journey",
                 {
                   opacity: 1,
-                  duration: 0.16,
+                  duration: 0.24,
                 },
                 1.23,
               );
@@ -420,9 +456,12 @@ export function InformationLandscapeMotion({
               gsap.set(
                 [
                   ".journey-stage__body",
+                  ".journey-stage h3",
                   ".journey-question__pulse",
                   ".journey-paths path",
                   ".journey-junction",
+                  ".journey-progress__line",
+                  ".journey-progress__label",
                   ".journey-search-nodes li",
                   ".journey-source-nodes li",
                   ".web2go-transform__rail",
