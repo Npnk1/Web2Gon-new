@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 
 const navigation = [
-  { label: "Services", href: "#capabilities" },
-  { label: "AI Visibility", href: "#capabilities" },
-  { label: "Work", href: "#demonstration" },
-  { label: "Insights", href: "#method" },
+  { label: "Landscape", href: "#information-landscape" },
+  { label: "Capabilities", href: "#capabilities" },
+  { label: "Demonstration", href: "#demonstration" },
+  { label: "Method", href: "#method" },
   { label: "About", href: "#about" },
   { label: "Contact", href: "#contact" },
 ] as const;

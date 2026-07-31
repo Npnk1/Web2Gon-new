@@ -15,7 +15,15 @@
 html {
   background: var(--color-paper);
   color: var(--color-ink);
-  scroll-padding-top: 5rem;
+  /* Must track .site-header height in first-chapter.css (5.5rem, 4.5rem at
+     <=64rem) so anchor targets clear the fixed header. */
+  scroll-padding-top: 5.5rem;
+}
+
+@media (max-width: 64rem) {
+  html {
+    scroll-padding-top: 4.5rem;
+  }
 }
 
 body {

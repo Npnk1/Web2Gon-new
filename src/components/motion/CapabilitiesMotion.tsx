@@ -8,10 +8,12 @@ type CapabilitiesMotionProps = {
   children: ReactNode;
 };
 
+/* Breakpoints mirror capabilities.css: pinning starts above 48rem so that 768px
+   itself stays unpinned, matching the rest of the site. */
 const desktopQuery =
-  "(min-width: 768px) and (prefers-reduced-motion: no-preference)";
+  "(min-width: 48.0625rem) and (prefers-reduced-motion: no-preference)";
 const mobileQuery =
-  "(max-width: 767px) and (prefers-reduced-motion: no-preference)";
+  "(max-width: 48rem) and (prefers-reduced-motion: no-preference)";
 
 export function CapabilitiesMotion({ children }: CapabilitiesMotionProps) {
   const scopeRef = useRef<HTMLDivElement>(null);
@@ -247,6 +249,10 @@ export function CapabilitiesMotion({ children }: CapabilitiesMotionProps) {
           const resizeObserver = new ResizeObserver(scheduleRefresh);
           resizeObserver.observe(stage);
           resizeObserver.observe(pin);
+          // ScrollTrigger writes an inline width onto the pin, so observing it
+          // is not enough to notice a viewport change. Watch the window too.
+          window.addEventListener("resize", scheduleRefresh);
+          window.addEventListener("orientationchange", scheduleRefresh);
           ScrollTrigger.addEventListener("refreshInit", measure);
 
           refreshFrame = requestAnimationFrame(() => {
@@ -258,6 +264,8 @@ export function CapabilitiesMotion({ children }: CapabilitiesMotionProps) {
             cancelAnimationFrame(resizeFrame);
             cancelAnimationFrame(refreshFrame);
             resizeObserver.disconnect();
+            window.removeEventListener("resize", scheduleRefresh);
+            window.removeEventListener("orientationchange", scheduleRefresh);
             ScrollTrigger.removeEventListener("refreshInit", measure);
             timeline.scrollTrigger?.kill();
             timeline.kill();

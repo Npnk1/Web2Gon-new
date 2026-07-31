@@ -1,4 +1,5 @@
 const footerNavigation = [
+  { label: "Landscape", href: "#information-landscape" },
   { label: "Capabilities", href: "#capabilities" },
   { label: "Demonstration", href: "#demonstration" },
   { label: "Method", href: "#method" },

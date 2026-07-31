@@ -15,7 +15,9 @@
   grid-template-columns: 18rem minmax(0, 1fr) 7rem 14rem;
   column-gap: 0;
   max-width: none;
-  padding: 0 0 0 4rem;
+  /* Align the wordmark with the section shells below it. The right edge stays
+     full-bleed so the header action keeps reaching the viewport edge. */
+  padding: 0 0 0 var(--gutter);
 }
 
 .brand {
@@ -28,8 +30,14 @@
 
 .desktop-nav {
   grid-column: 2;
-  width: min(100% - 5rem, 44rem);
+  /* Fill the column (capped) rather than shrinking below the labels' own
+     width -- a narrower box made space-between overflow the last item past
+     the divider. padding-inline-end reserves the clearance to that rule. */
+  width: 100%;
+  max-width: 44rem;
+  min-width: 0;
   justify-self: center;
+  padding-inline-end: 1.5rem;
 }
 
 .desktop-nav ul {
@@ -800,22 +808,26 @@
   }
 }
 
-@media (max-width: 75rem) {
+/* Header-only band. The six labels need more column than the wide header grid
+   leaves below ~1312px, so the narrower fixed columns start here rather than at
+   75rem. Kept separate from the 75rem block so hero and /01 are untouched. */
+@media (max-width: 82rem) and (min-width: 64.0625rem) {
   .site-header__inner {
     grid-template-columns: 14rem minmax(0, 1fr) 6rem 12.5rem;
-    padding-left: 2rem;
   }
 
   .brand {
     font-size: 1.2rem;
   }
+}
 
-  .desktop-nav {
-    width: calc(100% - 2.5rem);
+@media (max-width: 75rem) {
+  .site-header__inner {
+    padding-left: 2rem;
   }
 
   .desktop-nav ul {
-    gap: 1.1rem;
+    gap: clamp(0.6rem, 1.1vw, 1.1rem);
   }
 
   .desktop-nav a,
@@ -1229,6 +1241,16 @@
 
   .web2go-transform {
     margin-left: 0;
+  }
+}
+
+/* The hero visual starts hidden so the GSAP clip-path wipe can reveal it. With
+   no scripting there is no wipe, so it must be visible from the start. A
+   matching runtime guard in InformationLandscapeMotion covers the case where
+   scripting is enabled but GSAP never gets there. */
+@media (scripting: none) {
+  .hero__landscape-media {
+    visibility: visible;
   }
 }
 

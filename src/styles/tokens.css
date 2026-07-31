@@ -9,8 +9,8 @@
   --color-cobalt: #174bff;
   --color-cobalt-dark: #0a2ca8;
 
-  --font-sans: "Manrope", "Helvetica Neue", Arial, sans-serif;
-  --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  --font-sans: var(--font-manrope), "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-plex-mono), "SFMono-Regular", Consolas, monospace;
 
   --text-hero: clamp(4.75rem, 12vw, 14rem);
   --text-section: clamp(3rem, 6vw, 7.5rem);

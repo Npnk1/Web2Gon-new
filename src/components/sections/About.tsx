@@ -9,7 +9,7 @@ const photographs = [
   },
   {
     src: "/images/about/team-discussion.png",
-    alt: "Two Web2Go team members discussing work at a table",
+    alt: "Two people in conversation across a table",
     width: 410,
     height: 259,
   },
@@ -61,7 +61,7 @@ export function About() {
       <div
         className="about-gallery"
         role="group"
-        aria-label="Web2Go team at work"
+        aria-label="Working environment photographs"
       >
         {photographs.map((photograph) => (
           <figure className="about-gallery__panel" key={photograph.src}>

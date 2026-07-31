@@ -12,10 +12,11 @@ export function Hero() {
             width={3840}
             height={1800}
             priority
-            fetchPriority="high"
-            loading="eager"
-            sizes="100vw"
-            unoptimized
+            quality={60}
+            /* Below 48rem the media is scaled to calc(78svh * 32 / 15), which is
+               far wider than the viewport (~1704px at 768, ~1405px at 390), so
+               100vw would under-request there. */
+            sizes="(max-width: 48rem) 1800px, 100vw"
           />
         </div>
       </div>

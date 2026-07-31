@@ -108,7 +108,9 @@
   display: grid;
   grid-template-columns: minmax(0, max-content) 2rem;
   align-items: center;
-  gap: clamp(1.25rem, 2.5vw, 3rem);
+  /* 2.2vw rather than 2.5vw: buys back the few pixels Manrope needs for the
+     longest nowrap label around 1440. */
+  gap: clamp(1.25rem, 2.2vw, 3rem);
   width: fit-content;
   max-width: 100%;
 }
@@ -116,7 +118,10 @@
 .capability-row h3 {
   margin: 0;
   color: inherit;
-  font-size: clamp(3.6rem, 5.85vw, 7.3rem);
+  /* Manrope is wider than the Arial fallback this was tuned against, so the
+     longest nowrap label ("Technical Structure") overflowed its track between
+     roughly 1440 and 1920. 5.6vw clears it across that range. */
+  font-size: clamp(3.6rem, 5.6vw, 7.3rem);
   font-weight: 650;
   letter-spacing: -0.055em;
   line-height: 0.88;
@@ -187,7 +192,7 @@
   transform: translateY(0);
 }
 
-@media (max-width: 1120px) and (min-width: 768px) {
+@media (max-width: 70rem) and (min-width: 48.0625rem) {
   .capabilities {
     --capability-row-height: clamp(8.4rem, 18svh, 10rem);
   }
@@ -226,7 +231,7 @@
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 48rem) {
   .capabilities {
     padding-block: 4rem;
   }

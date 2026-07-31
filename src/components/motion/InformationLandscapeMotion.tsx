@@ -17,6 +17,19 @@ export function InformationLandscapeMotion({
     let teardown: (() => void) | undefined;
     let readinessCleanup: (() => void) | undefined;
 
+    /**
+     * The hero visual is hidden in CSS so the clip-path wipe can reveal it. If
+     * GSAP never gets that far, reveal it directly rather than leaving the LCP
+     * image invisible.
+     */
+    const revealHeroMedia = () => {
+      rootRef.current
+        ?.querySelectorAll<HTMLElement>(".hero__landscape-media")
+        .forEach((media) => {
+          media.style.visibility = "visible";
+        });
+    };
+
     void registerGsap().then(async (runtime) => {
       if (!runtime || cancelled || !rootRef.current) return;
 
@@ -67,10 +80,15 @@ export function InformationLandscapeMotion({
           );
           const resizeObserver = new ResizeObserver(checkReadiness);
           const mutationObserver = new MutationObserver(checkReadiness);
+          // Never block the timeline forever on geometry that will not settle
+          // (background tab, stalled measurement). Proceed and let the section
+          // catch up on the next refresh.
+          const timeout = window.setTimeout(finish, 1500);
 
           function finish() {
             if (settled) return;
             settled = true;
+            window.clearTimeout(timeout);
             window.removeEventListener(
               "web2go:landscape-geometry",
               checkReadiness,
@@ -514,6 +532,9 @@ export function InformationLandscapeMotion({
         media.revert();
         context.revert();
       };
+    }).catch(() => {
+      // GSAP failed to load or the setup threw. Content must stay visible.
+      revealHeroMedia();
     });
 
     return () => {
