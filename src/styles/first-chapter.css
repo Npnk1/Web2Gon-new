@@ -6,7 +6,7 @@
 
 .site-header {
   height: 5.5rem;
-  border-bottom-color: #d8d8d5;
+  border-bottom-color: var(--color-line);
   background: color-mix(in srgb, var(--color-paper) 97%, transparent);
   backdrop-filter: blur(10px);
 }
@@ -55,10 +55,11 @@
   align-items: center;
   align-self: stretch;
   justify-content: center;
-  border-inline: 1px solid #d8d8d5;
+  border-inline: 1px solid var(--color-line);
   font-family: var(--font-mono);
   font-size: 0.82rem;
-  font-weight: 600;
+  /* IBM Plex Mono ships 400/500 -- 600 was synthetic. */
+  font-weight: 500;
   letter-spacing: 0.06em;
 }
 
@@ -66,7 +67,9 @@
   grid-column: 4;
   margin: 0;
   padding: 0 1.75rem;
-  background: #171717;
+  /* Was #171717 -- a second near-black with no token behind it, sitting one
+     screen away from the hero CTA's --color-ink. */
+  background: var(--color-ink);
   font-family: var(--font-sans);
   font-size: 1rem;
   font-weight: 400;
@@ -79,14 +82,25 @@
 }
 
 .hero {
+  /* position/overflow were previously inherited from the retired home.css.
+     The absolutely-positioned landscape and terrain layers below depend on
+     this containing block, and overflow clips their deliberate bleed. */
+  position: relative;
+  overflow: hidden;
   min-height: 100svh;
   border-bottom: 0;
   background: var(--color-paper);
 }
 
 .hero__landscape {
+  /* position + tone likewise came from home.css. The static AVIF is authored
+     to be read through these two values; without them it renders at full
+     strength and reads far darker than intended. */
+  position: absolute;
   inset: 0;
   overflow: hidden;
+  opacity: 0.62;
+  mix-blend-mode: multiply;
   -webkit-mask-image: none;
   mask-image: none;
 }
@@ -109,37 +123,155 @@
   max-width: none;
 }
 
+/* Sibling of .hero__landscape, not a descendant -- see the comment in
+   Hero.tsx for why. Hidden until InformationLandscapeMotion confirms a
+   capable desktop + no-reduced-motion viewport and starts drawing.
+   Bottom-anchored and short (not inset:0) so the field sits concentrated in
+   the lower portion of the hero with a calm, line-free area above it. The top
+   fade (same device as the source mockup) keeps the densest rows in the lower
+   third and lets the field pass behind the headline's descender line without
+   competing with it -- rather than compressing the wave by shortening the
+   canvas further, which would change its amplitude-to-height proportions. */
+.hero__terrain {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  display: none;
+  width: 100%;
+  height: 52%;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 26%,
+    #000 100%
+  );
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 26%, #000 100%);
+}
+
+.hero__terrain.is-active {
+  display: block;
+}
+
+.hero__landscape-media.is-terrain .hero__landscape-image {
+  visibility: hidden;
+}
+
 .hero__title-line {
   display: block;
   overflow: hidden;
-}
-
-.hero__title-word {
-  display: block;
+  /* "the answer" must always render as one line, never wrap -- font-size is
+     fluid (clamp) specifically so this stays true at every width. */
+  white-space: nowrap;
 }
 
 .hero__grid {
-  grid-template-rows: 1fr;
-  align-items: start;
+  /* home.css still defines a `.hero__grid` rule of its own (dead stylesheet,
+     not yet removed); position/z-index/align-items are re-declared here so
+     this rule doesn't silently depend on -- or fight -- that leftover. */
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   min-height: 100svh;
   padding-top: 5.5rem;
-  padding-bottom: 2rem;
+  /* Previously inherited from home.css. Without it the bottom band's own
+     padding is clipped by .hero's overflow and the band reads as sitting on
+     the viewport edge. */
+  padding-bottom: 3rem;
+}
+
+.hero__kicker {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin: 0;
+  padding-top: 2.25rem;
+  color: var(--color-ink-soft);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.hero__kicker-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.hero__kicker-index {
+  color: var(--color-cobalt);
+}
+
+.hero__kicker-rule {
+  width: 2.75rem;
+  height: 1px;
+  background: var(--color-ink-soft);
+}
+
+.hero__kicker-note {
+  flex-shrink: 0;
+}
+
+/* --- headline + right column ----------------------------------------- */
+
+.hero__main {
+  display: flex;
+  /* Headline and support are positioned independently below (support gets
+     its own margin-top), not sibling-height-aligned: the reference's support
+     column starts partway down the headline regardless of the headline's
+     own height, which align-items:flex-end/center can't express. */
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: clamp(3rem, 5vw, 5.5rem);
+  margin-top: clamp(0.5rem, 2.5vh, 1.75rem);
+  /* Floor for the gap down to the bottom band. .hero__band's margin-top:auto
+     absorbs any surplus height, but on short viewports it would otherwise
+     collapse to nothing -- this keeps the CTA row clear of the band. */
+  margin-bottom: clamp(3.5rem, 8vh, 5.5rem);
 }
 
 .hero__title-wrap {
   position: relative;
-  top: -22px;
-  grid-column: 2 / span 7;
-  align-self: start;
-  margin-top: clamp(8.25rem, 13.5vh, 9.5rem);
-  margin-left: -2.5rem;
+  /* home.css's own .hero__title-wrap sets align-self:center (leftover,
+     dead stylesheet, still loaded) -- override so it inherits .hero__main's
+     align-items:flex-start instead. */
+  align-self: flex-start;
+  /* flex-basis:0 makes this column's width purely "space left over after the
+     support column", never content-derived -- which is what lets the headline
+     size itself off the container below without a circular dependency. */
+  flex: 1 1 0;
+  min-width: 0;
+  container-type: inline-size;
 }
 
 .hero h1 {
-  font-size: clamp(8rem, 10.5vw, 13.5rem);
+  /* home.css's own `.hero h1` sets display:flex/column (leftover, dead
+     stylesheet, still loaded). Left alone it turns the two lines into flex
+     items, and its `span:nth-child(2){margin-left:0.45em}` then both indents
+     line 2 and shrinks its stretched width by the same amount -- which is
+     what was silently clipping "answer" against .hero__title-line's
+     overflow:hidden. Both are reset explicitly here. */
+  display: block;
+  margin: 0;
+  /* Sized off the title column (cqw), not the viewport (vw): the column is
+     `container - support - gap`, so a vw-based size drifts away from its own
+     container as the viewport changes and eventually overflows. At 23cqw
+     "the answer" measures ~90% of the column, so the clear space after the
+     final letter stays well above the required minimum at every width by
+     construction -- and the headline keeps its original size rather than
+     being shrunk to dodge the overflow. */
+  font-size: min(23cqw, 15rem);
   font-weight: 500;
-  line-height: 0.73;
-  letter-spacing: -0.055em;
+  line-height: 0.82;
+  letter-spacing: -0.045em;
 }
 
 .hero h1 span:nth-child(2),
@@ -147,78 +279,178 @@
   margin-left: 0;
 }
 
+.hero__title-word {
+  display: inline-block;
+}
+
+.hero__title-word--serif {
+  font-family: var(--font-editorial-italic);
+  font-size: 0.58em;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.01em;
+}
+
 .hero__support {
-  grid-column: 10 / span 3;
-  align-self: end;
-  margin-bottom: clamp(15rem, 27vh, 18rem);
+  /* Same home.css leak as .hero__title-wrap above. */
+  align-self: flex-start;
+  flex-shrink: 0;
+  width: clamp(21.5rem, 25vw, 24rem);
+  /* Independent vertical offset from the headline -- see .hero__main. */
+  margin-top: clamp(3rem, 7vh, 6.5rem);
   padding: 0;
   transform: none;
 }
 
-.hero__support > p {
-  position: relative;
-  top: -1.1rem;
-  max-width: 25ch;
-  margin: 0 0 1.8rem;
-  padding-left: clamp(1rem, 1.45vw, 1.65rem);
-  font-size: clamp(1.24rem, 1.45vw, 1.72rem);
+.hero__support-hook {
+  margin: 0 0 1.15rem;
+  color: var(--color-ink);
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.hero__support-body {
+  max-width: 27ch;
+  margin: 0 0 2.25rem;
+  color: var(--color-ink);
+  font-size: 1.05rem;
   font-weight: 400;
-  line-height: 1.24;
-  letter-spacing: -0.04em;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
 }
 
-.hero__support > p::before {
-  position: absolute;
-  top: 0;
-  bottom: 0.65rem;
-  left: 0;
-  width: 2px;
-  background: var(--color-ink);
-  content: "";
+.hero__support-body em {
+  font-family: var(--font-editorial-italic);
+  font-size: 1.18em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
 }
 
-.hero__support strong {
-  font-weight: 700;
+.hero__actions {
+  /* home.css's own .hero__actions sets flex-direction:column (leftover, dead
+     stylesheet, still loaded) -- override explicitly, as elsewhere in this
+     file, rather than relying on it never mattering. */
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0.65rem;
 }
 
-.hero__punctuation {
-  color: var(--color-cobalt);
-}
-
-.hero__link-group {
-  display: grid;
-  width: min(100%, 13rem);
-  margin-left: clamp(1rem, 1.45vw, 1.65rem);
-}
-
-.hero__link {
-  position: relative;
-  display: block;
-  width: 100%;
-  padding-bottom: 0.25rem;
-  border-bottom: 1px solid currentColor;
-  font-size: clamp(0.92rem, 1.03vw, 1.15rem);
+.hero__cta {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 3.15rem;
+  padding: 0.5rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 500;
+  letter-spacing: 0.045em;
   line-height: 1.25;
-  letter-spacing: -0.035em;
+  text-align: center;
   text-decoration: none;
+  text-transform: uppercase;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
 }
 
-.hero__link::after {
-  position: absolute;
-  right: 0;
-  bottom: -0.24rem;
-  width: 0.48rem;
-  height: 0.48rem;
+.hero__cta--primary {
+  background: var(--color-ink);
+  color: var(--color-paper-bright);
+}
+
+.hero__cta--primary:hover {
   background: var(--color-cobalt);
-  content: "";
 }
 
-.hero__link:hover {
+.hero__cta--secondary {
+  border: 1px solid var(--color-fog-strong);
+  color: var(--color-ink);
+}
+
+.hero__cta--secondary:hover {
+  border-color: var(--color-ink);
   color: var(--color-cobalt);
 }
 
-.hero__orientation {
-  display: none;
+/* --- bottom band -------------------------------------------------------- */
+
+.hero__band {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) minmax(11rem, 1.15fr);
+  gap: 0 1.5rem;
+  /* Pushes the band to the bottom of the flex column, leaving the space
+     between it and .hero__main empty for the terrain to show through. */
+  margin-top: auto;
+  padding-top: 1.25rem;
+  padding-bottom: clamp(1.5rem, 4vh, 2.5rem);
+  border-top: 1px solid var(--color-line);
+}
+
+.hero__band-col {
+  min-width: 0;
+  padding-left: 1.5rem;
+  border-left: 1px solid var(--color-line);
+}
+
+.hero__band-col:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.hero__band-figure {
+  margin: 0 0 0.4rem;
+  color: var(--color-ink);
+  font-size: clamp(1.3rem, 1.6vw, 1.75rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.hero__band-caption {
+  margin: 0;
+  color: var(--color-ink-soft);
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.hero__band-label {
+  margin: 0 0 0.6rem;
+  color: var(--color-ink-soft);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.hero__band-col--audited ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hero__band-col--audited li {
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--color-fog-strong);
+  color: var(--color-ink);
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
 }
 
 .information-landscape {
@@ -835,15 +1067,6 @@
     font-size: 0.88rem;
   }
 
-  .hero__title-wrap {
-    grid-column: 1 / span 6;
-    margin-left: 0;
-  }
-
-  .hero__support {
-    grid-column: 7 / -1;
-  }
-
   .information-journey__stages {
     grid-template-columns: repeat(6, minmax(0, 1fr));
   }
@@ -913,21 +1136,6 @@
 
   .hero__grid {
     padding-top: 4.5rem;
-  }
-
-  .hero__title-wrap {
-    top: -10px;
-    grid-column: 1 / span 6;
-    margin-top: clamp(7rem, 15vh, 9rem);
-  }
-
-  .hero h1 {
-    font-size: clamp(6.2rem, 14.5vw, 9.25rem);
-  }
-
-  .hero__support {
-    grid-column: 6 / -1;
-    margin-bottom: clamp(7rem, 15vh, 10rem);
   }
 
   .information-landscape,
@@ -1087,20 +1295,14 @@
     grid-column: 5 / -1;
   }
 
-  .mobile-menu {
-    top: 4.5rem;
-  }
-
-  .hero,
-  .hero__grid {
+  .hero {
     min-height: 100svh;
   }
 
+  /* Content genuinely needs more room than one viewport at this width once
+     the kicker and band stack in; min-height is a floor here, not a cap. */
   .hero__grid {
-    display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    grid-template-rows: auto 1fr auto;
-    align-items: start;
+    min-height: 100svh;
     padding-top: 4.5rem;
     padding-bottom: 2rem;
   }
@@ -1123,48 +1325,65 @@
     margin: 0;
   }
 
+  .hero__kicker {
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
+  }
+
+  .hero__main {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.75rem;
+    margin-top: 2.5rem;
+  }
+
   .hero__title-wrap {
-    grid-column: 1 / -1;
-    grid-row: 1;
     width: 100%;
-    margin: clamp(4.25rem, 9vh, 5rem) 0 0;
-    padding: 0;
   }
 
   .hero h1 {
-    font-size: clamp(4.85rem, 20.5vw, 6.8rem);
-    line-height: 0.78;
+    /* Tuned so "the answer" (nowrap, one line) stays inside the title column
+       down to the 320px minimum without clipping against the line's own
+       overflow:hidden. */
+    font-size: clamp(4rem, 18vw, 6.25rem);
+    line-height: 0.86;
   }
 
   .hero__support {
-    grid-column: 2 / -1;
-    grid-row: 3;
-    width: min(100%, 24rem);
-    margin: 0 0 2rem auto;
-    padding: 1rem 0 0;
+    width: 100%;
   }
 
-  .hero__support > p {
-    top: 0;
-    max-width: 25ch;
-    margin-bottom: 1.1rem;
-    padding-left: 1rem;
-    font-size: clamp(1.08rem, 4.8vw, 1.35rem);
-    line-height: 1.28;
+  .hero__support-body {
+    max-width: none;
   }
 
-  .hero__support > p::before {
-    bottom: 0.4rem;
-    width: 1px;
+  .hero__actions {
+    flex-direction: column;
   }
 
-  .hero__link-group {
-    width: min(100%, 13rem);
-    margin-left: 1rem;
+  .hero__cta {
+    flex: none;
+    max-width: none;
+    width: 100%;
   }
 
-  .hero__link {
-    font-size: 0.92rem;
+  .hero__band {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-top: 2.75rem;
+  }
+
+  .hero__band-col {
+    padding-top: 1.1rem;
+    padding-left: 0;
+    border-top: 1px solid var(--color-line);
+    border-left: 0;
+  }
+
+  .hero__band-col:first-child {
+    padding-top: 0;
+    border-top: 0;
   }
 
   .information-landscape__eyebrow,
@@ -1199,22 +1418,6 @@
 
   .menu-trigger {
     grid-column: 4;
-  }
-
-  .hero__grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .hero__title-wrap {
-    grid-column: 1 / -1;
-  }
-
-  .hero h1 {
-    font-size: clamp(4.85rem, 20.5vw, 5.2rem);
-  }
-
-  .hero__support {
-    grid-column: 2 / -1;
   }
 
   .information-landscape__heading h2 {
@@ -1261,7 +1464,9 @@
 
   .hero__title,
   .hero__title-word,
+  .hero__kicker,
   .hero__support,
+  .hero__band,
   .hero__landscape,
   .hero__landscape-media,
   .landscape-word,

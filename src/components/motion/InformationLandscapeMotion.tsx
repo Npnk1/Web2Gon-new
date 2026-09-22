@@ -2,6 +2,7 @@
 
 import { useLayoutEffect, useRef } from "react";
 import { registerGsap } from "@/lib/gsap";
+import { hexToRgbTriplet, startHeroTerrain } from "@/lib/heroTerrain";
 
 type InformationLandscapeMotionProps = {
   children: React.ReactNode;
@@ -151,11 +152,20 @@ export function InformationLandscapeMotion({
             });
 
             intro
-              .from(".hero__title-word", {
-                yPercent: 112,
-                duration: 0.78,
-                stagger: 0.075,
+              .from(".hero__kicker", {
+                autoAlpha: 0,
+                duration: 0.5,
+                y: 12,
               })
+              .from(
+                ".hero__title-word",
+                {
+                  yPercent: 112,
+                  duration: 0.78,
+                  stagger: 0.075,
+                },
+                0.1,
+              )
               .from(
                 ".hero__landscape-media",
                 {
@@ -163,7 +173,7 @@ export function InformationLandscapeMotion({
                   duration: 1.1,
                   ease: "power2.inOut",
                 },
-                0.08,
+                0.18,
               )
               .from(
                 ".hero__support",
@@ -172,7 +182,16 @@ export function InformationLandscapeMotion({
                   duration: 0.62,
                   y: 22,
                 },
-                0.48,
+                0.58,
+              )
+              .from(
+                ".hero__band",
+                {
+                  autoAlpha: 0,
+                  duration: 0.55,
+                  y: 16,
+                },
+                0.72,
               );
 
             intro.pause(0);
@@ -182,9 +201,11 @@ export function InformationLandscapeMotion({
             return () => {
               gsap.set(
                 [
+                  ".hero__kicker",
                   ".hero__title-word",
                   ".hero__landscape-media",
                   ".hero__support",
+                  ".hero__band",
                 ],
                 { clearProps: "all" },
               );
@@ -205,7 +226,9 @@ export function InformationLandscapeMotion({
                 },
               })
               .to(".hero__title", { yPercent: -7, autoAlpha: 0.34 }, 0)
+              .to(".hero__kicker", { autoAlpha: 0.34 }, 0)
               .to(".hero__support", { y: -28, autoAlpha: 0.42 }, 0)
+              .to(".hero__band", { autoAlpha: 0.34 }, 0)
               .to(
                 ".hero__landscape-media",
                 { y: -30 },
@@ -221,7 +244,9 @@ export function InformationLandscapeMotion({
               gsap.set(
                 [
                   ".hero__title",
+                  ".hero__kicker",
                   ".hero__support",
+                  ".hero__band",
                   ".hero__landscape",
                 ],
                 { clearProps: "all" },
@@ -229,6 +254,52 @@ export function InformationLandscapeMotion({
               gsap.set(".hero__landscape-media", {
                 clearProps: "transform",
               });
+            };
+          },
+        );
+
+        media.add(
+          "(min-width: 1025px) and (prefers-reduced-motion: no-preference)",
+          () => {
+            const canvas = rootRef.current?.querySelector<HTMLCanvasElement>(
+              ".hero__terrain",
+            );
+            // The image wrapper is hidden separately from the canvas itself,
+            // since they're independent siblings (see Hero.tsx).
+            const imageWrapper = rootRef.current?.querySelector<HTMLElement>(
+              ".hero__landscape-media",
+            );
+            if (!canvas || !imageWrapper) return;
+
+            const inkHex = getComputedStyle(document.documentElement)
+              .getPropertyValue("--color-ink")
+              .trim();
+            const terrain = startHeroTerrain(canvas, hexToRgbTriplet(inkHex));
+            canvas.classList.add("is-active");
+            imageWrapper.classList.add("is-terrain");
+            gsap.fromTo(
+              canvas,
+              { autoAlpha: 0 },
+              { autoAlpha: 1, duration: 0.6, ease: "power2.out" },
+            );
+
+            let resizeFrame = 0;
+            const handleResize = () => {
+              if (resizeFrame) cancelAnimationFrame(resizeFrame);
+              resizeFrame = requestAnimationFrame(() => {
+                resizeFrame = 0;
+                terrain.resize();
+              });
+            };
+            window.addEventListener("resize", handleResize);
+
+            return () => {
+              window.removeEventListener("resize", handleResize);
+              if (resizeFrame) cancelAnimationFrame(resizeFrame);
+              terrain.stop();
+              canvas.classList.remove("is-active");
+              imageWrapper.classList.remove("is-terrain");
+              gsap.set(canvas, { clearProps: "opacity,visibility" });
             };
           },
         );

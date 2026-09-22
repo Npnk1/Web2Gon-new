@@ -1,11 +1,4 @@
-const footerNavigation = [
-  { label: "Landscape", href: "#information-landscape" },
-  { label: "Capabilities", href: "#capabilities" },
-  { label: "Demonstration", href: "#demonstration" },
-  { label: "Method", href: "#method" },
-  { label: "About", href: "#about" },
-  { label: "Contact", href: "#contact" },
-] as const;
+import { NAVIGATION as footerNavigation } from "@/lib/site";
 
 export function SiteFooter() {
   return (

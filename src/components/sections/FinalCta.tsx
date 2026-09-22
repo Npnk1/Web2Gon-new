@@ -1,3 +1,5 @@
+import { CONTACT_HREF } from "@/lib/site";
+
 export function FinalCta() {
   return (
     <section
@@ -16,14 +18,10 @@ export function FinalCta() {
             recommend.
           </p>
           <div className="final-cta__actions">
-            <span
-              className="final-cta__primary"
-              aria-disabled="true"
-              title="Contact destination pending verification"
-            >
+            <a className="final-cta__primary" href={CONTACT_HREF}>
               Start a conversation
               <span aria-hidden="true">&rarr;</span>
-            </span>
+            </a>
             <a className="final-cta__secondary" href="#method">
               Explore our method
             </a>

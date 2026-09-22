@@ -36,9 +36,22 @@ export function CompletionMotion({ children }: CompletionMotionProps) {
         const demonstration = scope.querySelector<HTMLElement>(
           "[data-completion-demonstration]",
         );
-        const phases = Array.from(
-          scope.querySelectorAll<HTMLElement>("[data-demonstration-phase]"),
-        );
+        const q = (selector: string) =>
+          Array.from(scope.querySelectorAll<HTMLElement>(selector));
+        // /04 reveals in reading order: sources, then the lineage that connects
+        // them, then the canonical record, then the answer.
+        const demoSignals = q("[data-demo-signal]");
+        const demoLineage = q("[data-demo-lineage]");
+        const demoNodes = q("[data-demo-node]");
+        const demoRecord = q("[data-demo-record]");
+        const demoAnswer = q("[data-demo-answer]");
+        const demoTargets = [
+          ...demoSignals,
+          ...demoLineage,
+          ...demoNodes,
+          ...demoRecord,
+          ...demoAnswer,
+        ];
         const method = scope.querySelector<HTMLElement>(
           "[data-completion-method]",
         );
@@ -77,6 +90,7 @@ export function CompletionMotion({ children }: CompletionMotionProps) {
           : methodPanel;
 
         let demonstrationPlayed = false;
+        let demonstrationTimeline: ReturnType<typeof gsap.timeline> | undefined;
         let methodPlayed = false;
         let methodTimeline: ReturnType<typeof gsap.timeline> | undefined;
         let methodTrigger: ReturnType<typeof ScrollTrigger.create> | undefined;
@@ -87,18 +101,50 @@ export function CompletionMotion({ children }: CompletionMotionProps) {
             if (!entry?.isIntersecting || demonstrationPlayed) return;
 
             demonstrationPlayed = true;
-            gsap.fromTo(
-              phases,
-              { autoAlpha: 0, y: 24 },
-              {
-                autoAlpha: 1,
-                y: 0,
-                duration: 0.58,
-                stagger: 0.16,
-                ease: "power3.out",
-                clearProps: "opacity,visibility,transform",
-              },
-            );
+            demonstrationTimeline = gsap
+              .timeline({
+                defaults: { ease: "power3.out" },
+                onComplete: () => {
+                  gsap.set(demoTargets, {
+                    clearProps: "opacity,visibility,transform",
+                  });
+                },
+              })
+              .fromTo(
+                demoSignals,
+                { autoAlpha: 0, y: 14 },
+                { autoAlpha: 1, y: 0, duration: 0.42, stagger: 0.07 },
+              )
+              .fromTo(
+                demoLineage,
+                { scaleX: 0 },
+                { scaleX: 1, duration: 0.34, stagger: 0.05 },
+                0.46,
+              )
+              .fromTo(
+                demoNodes,
+                { autoAlpha: 0, scale: 0.4 },
+                {
+                  autoAlpha: 1,
+                  scale: 1,
+                  duration: 0.24,
+                  stagger: 0.05,
+                  transformOrigin: "50% 50%",
+                },
+                0.62,
+              )
+              .fromTo(
+                demoRecord,
+                { autoAlpha: 0, y: 16 },
+                { autoAlpha: 1, y: 0, duration: 0.46 },
+                0.58,
+              )
+              .fromTo(
+                demoAnswer,
+                { autoAlpha: 0, y: 20 },
+                { autoAlpha: 1, y: 0, duration: 0.55 },
+                0.96,
+              );
             demonstrationObserver.disconnect();
           },
           { threshold: [0, 0.16, 0.32] },
@@ -264,7 +310,8 @@ export function CompletionMotion({ children }: CompletionMotionProps) {
           if (refreshFrame) window.cancelAnimationFrame(refreshFrame);
           methodTrigger?.kill();
           methodTimeline?.kill();
-          gsap.set(phases, { clearProps: "opacity,visibility,transform" });
+          demonstrationTimeline?.kill();
+          gsap.set(demoTargets, { clearProps: "opacity,visibility,transform" });
           gsap.set(
             [
               methodHeading,

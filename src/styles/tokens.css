@@ -3,14 +3,32 @@
   --color-paper-bright: #fbfaf7;
   --color-ink: #151619;
   --color-ink-muted: #6b7078;
+  /* Mid step between ink and ink-muted. ink-muted only clears AA on paper
+     (4.58:1) and fails on any recessed surface, so small mono labels use this. */
+  --color-ink-soft: #5b6068;
   --color-line: #d7d8d4;
   --color-fog: #e6e8eb;
   --color-fog-strong: #c5cbd2;
   --color-cobalt: #174bff;
   --color-cobalt-dark: #0a2ca8;
 
+  /* Dark answer panel (/04). The warm-paper palette has no tone for an
+     inverted surface, so these are the only additions the redesign needs. */
+  --color-panel: #0e0e0d;
+  --color-panel-raised: #17171a;
+  --color-panel-line: #2b2b27;
+  --color-panel-ink: #f2f0e9;
+  --color-panel-ink-muted: #bebaaf;
+  --color-panel-ink-faint: #918d81;
+  --color-cobalt-bright: #6d7cff;
+  --color-surface-recessed: #efebe2;
+
   --font-sans: var(--font-manrope), "Helvetica Neue", Arial, sans-serif;
   --font-mono: var(--font-plex-mono), "SFMono-Regular", Consolas, monospace;
+  /* Editorial italic accent -- isolated words only (Hero "the", emphasised
+     verbs), never body copy. */
+  --font-editorial-italic: var(--font-serif-accent), Georgia,
+    "Times New Roman", serif;
 
   --text-hero: clamp(4.75rem, 12vw, 14rem);
   --text-section: clamp(3rem, 6vw, 7.5rem);

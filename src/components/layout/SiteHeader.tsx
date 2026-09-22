@@ -2,14 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const navigation = [
-  { label: "Landscape", href: "#information-landscape" },
-  { label: "Capabilities", href: "#capabilities" },
-  { label: "Demonstration", href: "#demonstration" },
-  { label: "Method", href: "#method" },
-  { label: "About", href: "#about" },
-  { label: "Contact", href: "#contact" },
-] as const;
+import { CONTACT_HREF, NAVIGATION as navigation } from "@/lib/site";
 
 export function SiteHeader() {
   const [isOpen, setIsOpen] = useState(false);
@@ -66,46 +59,54 @@ export function SiteHeader() {
   };
 
   return (
-    <header className="site-header">
-      <div className="site-header__inner">
-        <a className="brand" href="#top" aria-label="Web2Go home">
-          <span>WEB2GO</span>
-        </a>
+    <>
+      <header className="site-header">
+        <div className="site-header__inner">
+          <a className="brand" href="#top" aria-label="Web2Go home">
+            <span>WEB2GO</span>
+          </a>
 
-        <nav className="desktop-nav" aria-label="Primary navigation">
-          <ul>
-            {navigation.map((item) => (
-              <li key={item.label}>
-                <a href={item.href}>{item.label}</a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+          <nav className="desktop-nav" aria-label="Primary navigation">
+            <ul>
+              {navigation.map((item) => (
+                <li key={item.label}>
+                  <a href={item.href}>{item.label}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-        <span className="site-header__language" aria-label="Current language: English">
-          EN
-        </span>
-
-        <a className="header-action" href="#contact">
-          Book a consultation
-        </a>
-
-        <button
-          className="menu-trigger"
-          ref={triggerRef}
-          type="button"
-          aria-expanded={isOpen}
-          aria-controls="mobile-menu"
-          onClick={() => setIsOpen((open) => !open)}
-        >
-          <span>{isOpen ? "Close" : "Menu"}</span>
-          <span className="menu-trigger__icon" aria-hidden="true">
-            <i />
-            <i />
+          <span
+            className="site-header__language"
+            aria-label="Current language: English"
+          >
+            EN
           </span>
-        </button>
-      </div>
 
+          <a className="header-action" href={CONTACT_HREF}>
+            Book a consultation
+          </a>
+
+          <button
+            className="menu-trigger"
+            ref={triggerRef}
+            type="button"
+            aria-expanded={isOpen}
+            aria-controls="mobile-menu"
+            onClick={() => setIsOpen((open) => !open)}
+          >
+            <span>{isOpen ? "Close" : "Menu"}</span>
+            <span className="menu-trigger__icon" aria-hidden="true">
+              <i />
+              <i />
+            </span>
+          </button>
+        </div>
+      </header>
+
+      {/* Sibling of the header, not a child: the header's backdrop-filter makes
+          it a containing block for fixed descendants, which previously trapped
+          this overlay inside the 72px header box. */}
       <div
         className="mobile-menu"
         id="mobile-menu"
@@ -126,11 +127,11 @@ export function SiteHeader() {
         </nav>
         <div className="mobile-menu__footer">
           <span>[W2G] Source system</span>
-          <a href="#contact" onClick={closeFromLink}>
+          <a href={CONTACT_HREF} onClick={closeFromLink}>
             Book a consultation
           </a>
         </div>
       </div>
-    </header>
+    </>
   );
 }
